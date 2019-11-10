@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>React App</title>
+    <!--- Import the scripts for React from the src folder-->
+    <script src="src/js/browser.min.js"></script>
+    <script src="src/js/react.js"></script>
+    <script src="src/js/react-dom.js"></script>
+</head>
+<body>
+    <h1>This is my React App</h1>
+    <div id="container"></div>
+    <script type="text/babel">
+        //create a container for the comment section
+        var Comment = React.createClass(
+            {
+                //create a function for editing a comment
+                edit:function(){
+                    alert('Editing Comment');
+                },
+                //create a function to remove a comment
+                remove: function(){
+                    alert('Removing Comment');
+                },
+                //function to render the content
+                render: function () {
+                    return (
+                        <div className="commentContainer">
+                            <div className="commentText">{this.props.children}</div>
+                            <button className="button-primary" onClick={this.edit}>Edit</button>
+                            <button className="button-secondary" onClick={this.remove}>Remove</button>
+                        </div>
+                    )
+                }
+            }
+        );
+        //Render the component above and store into the DIV tag with id="container"
+        ReactDOM.render(
+            <div className="board">
+                <Comment>Hey Now</Comment>
+                <Comment>Another comment</Comment>
+                <Comment>And another comment</Comment>
+            </div>
+            ,document.getElementById('container'));
+    </script>
+</body>
+</html>
