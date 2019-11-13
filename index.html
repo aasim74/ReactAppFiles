@@ -10,39 +10,120 @@
 </head>
 <body>
     <h1>This is my React App</h1>
-    <div id="container"></div>
+    <!-- The following container will receive the HTML Element(s)-->
+    <div id="container" padding="50px"></div>
+
+    <!-- The following script to create a HTML Element using React-->
     <script type="text/babel">
-        //create a container for the comment section
-        var Comment = React.createClass(
-            {
-                //create a function for editing a comment
-                edit:function(){
-                    alert('Editing Comment');
-                },
-                //create a function to remove a comment
-                remove: function(){
-                    alert('Removing Comment');
-                },
-                //function to render the content
-                render: function () {
-                    return (
-                        <div className="commentContainer">
-                            <div className="commentText">{this.props.children}</div>
-                            <button className="button-primary" onClick={this.edit}>Edit</button>
-                            <button className="button-secondary" onClick={this.remove}>Remove</button>
-                        </div>
-                    )
+        var Comment = React.createClass({
+            //First find the initial state
+            getInitialState: function () {
+                return {editing: false}
+            },
+            //create an Edit function for when the edit button is clicked
+            edit: function () {
+                this.setState({editing: true});
+            },
+            //function to save the comment and come out of editing mode for the comment
+            save: function () {
+                var val = this.refs.newText.valueOf();
+                console.log('New Comment Value: ' + val);
+                this.setState({editing: false});
+            },
+            //create a function to delete or remove the comment
+            remove: function () {
+                alert('You are about to remove the comment');
+            },
+
+            //Ideally, we want two modes of displaying the comment - Normal and Form view
+            //Create a Normal view render function
+            renderNormal: function () {
+                return (
+                    <div className="commentContainer" padding={"20px"}>
+                        <div className="commentText">{this.props.children}</div>
+                        <button onClick={this.edit} className="button-primary">Edit</button>
+                        <button onClick={this.remove} className="button-secondary">Remove</button>
+                    </div>
+                );
+            },
+            //create a Form view mode for editing the comment
+            renderForm: function () {
+                return (
+                    <div className="commentContainer">
+                        <textarea ref="newText" defaultValue={this.props.children}></textarea>
+                        <button onClick={this.save} className="button-success">Save</button>
+                    </div>
+                );
+            },
+                //create a function which renders the comment
+            render: function () {
+                //if the editing mode is true, then display the textarea HTML view
+                //otherwise display it in Normal view
+                    if (this.state.editing) {
+                        return this.renderForm();
+                    } else {
+                        return this.renderNormal();
+                    }
                 }
-            }
-        );
-        //Render the component above and store into the DIV tag with id="container"
+        });
+
+        var Board = React.createClass({
+            //Initial state will be an array of comments
+            getInitialState: function () {
+                return {
+                    comments: ["comment1", "comment2","comment3"]
+                }
+            },
+
+            eachComment: function(text, i){
+                //'key' in React allows you to identify a unique child
+                return(
+                    <Comment key={i} index={i}>
+                        {text}
+                    </Comment>);
+            },
+
+            //function to remove the comment
+            removeComment: function(i){
+                console.log('Removing Comment: ' + i);
+                var arr = this.state.comments;
+                //we can splice the array to give a new array with the comment i removed
+                arr.splice(i, 1);
+                //sets the new array to the updated one.
+                this.setState({comments: arr});
+            },
+
+            updateComment: function(newText, i){
+                console.log('Updating Comment: ' + i);
+                var arr = this.state.comments;
+                arr[i] = newText;
+                this.setState({comments: arr});
+            },
+
+            render: function () {
+                return(
+                <div className="board">
+                    {
+                        //map function will take the 'comments' array above, and loop through each item
+                        //treats each item in the array as text
+                        this.state.comments.map(this.eachComment)
+                    }
+                </div>
+                );
+                }
+        });
+        //ReactDOM is an object to be called when using the functions in CheckBox class
+        //Constructor
+        //The function 'ReactcreateClass()' assigns 'CheckBox' functions to RenderDOM to be called
         ReactDOM.render(
-            <div className="board">
-                <Comment>Hey Now</Comment>
-                <Comment>Another comment</Comment>
-                <Comment>And another comment</Comment>
-            </div>
-            ,document.getElementById('container'));
+        <div className="board">
+            <comment>This is the first comment</comment>
+            <comment>Second Comment</comment>
+            <comment>Third Comment</comment>
+        </div>
+        , document.getElementById('container'));
+
+        ReactDOM.render(<Board/>, document.getElementById('container'));
     </script>
 </body>
 </html>
